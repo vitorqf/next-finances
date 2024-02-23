@@ -1,3 +1,4 @@
+import { BalanceChart } from "@/components/BalanceChart";
 import { Card } from "@/components/Card";
 import { Header } from "@/components/Header";
 import { RecentTransactions } from "@/components/RecentTransactions";
@@ -34,13 +35,7 @@ export default async function Home() {
               Compare os custos ao longo do tempo
             </p>
           </div>
-          <Card type="Crédito" flag="visa" title="Cartão novo" digits={5678} />
-          <Card
-            type="Crédito"
-            flag="mastercard"
-            title="Cartão novo"
-            digits={9012}
-          />
+          <BalanceChart transactions={transactions} />
         </section>
       </div>
     </div>
