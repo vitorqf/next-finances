@@ -10,7 +10,7 @@ export function Header({
   actions: ReactNode;
 }) {
   return (
-    <header className="p-4 border-b-2 border-b-white border-opacity-10 flex items-center justify-between">
+    <header className="py-4 border-b-2 border-b-white border-opacity-10 flex items-center justify-between">
       <div>
         <h1 className="text-3xl font-bold">{title}</h1>
         <p className="text-slate-400">{subtitle}</p>
