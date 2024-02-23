@@ -1,78 +1,93 @@
 "use client";
 
 import { Transaction } from "@/models/Transaction";
-import { formatTime } from "@/utils";
+import {
+  CategoryScale,
+  Chart,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
 import { useMemo } from "react";
-import { AxisOptions, Chart } from "react-charts";
+import { Line } from "react-chartjs-2";
 
-type MyDatum = {
-  date: string;
-  average: number;
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Chart.js Line Chart",
+    },
+  },
 };
+
+function getDaysInMonth(month: number, year: number) {
+  const date = new Date(year, month, 1);
+  const days = [];
+  while (date.getMonth() === month) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+  return days;
+}
 
 export function BalanceChart({
   transactions,
 }: {
   transactions: Transaction[];
 }) {
-  // Aggregate transaction amounts by date
-  const aggregatedData = useMemo(() => {
-    const dataMap = new Map<string, { total: number; count: number }>(); // Map to store aggregated data
-
-    // Iterate through transactions and aggregate amounts by date
-    transactions.forEach((transaction) => {
-      const date = formatTime(transaction.date);
-      const amount = transaction.amount;
-
-      // Update the total amount and count for the date
-      if (dataMap.has(date)) {
-        const entry = dataMap.get(date)!;
-        entry.total += amount;
-        entry.count += 1;
+  const transactionsPerDay = useMemo(() => {
+    return transactions.reduce((acc, transaction) => {
+      if (acc[transaction.date]) {
+        acc[transaction.date] += transaction.amount / 100;
       } else {
-        dataMap.set(date, { total: amount, count: 1 });
+        acc[transaction.date] = transaction.amount / 100;
       }
-    });
 
-    // Compute the average for each date
-    return Array.from(dataMap).map(([date, { total, count }]) => ({
-      date,
-      average: total / count,
-    }));
+      return acc;
+    }, {} as Record<string, number>);
   }, [transactions]);
 
-  const data = [
-    {
-      label: "Average",
-      data: aggregatedData,
-    },
-  ];
+  const labels = useMemo(() => {
+    const currentDate = new Date();
+    const daysInMonth = getDaysInMonth(
+      currentDate.getMonth(),
+      currentDate.getFullYear()
+    );
 
-  const primaryAxis = useMemo(
-    (): AxisOptions<MyDatum> => ({
-      getValue: (datum) => datum.date,
-    }),
-    []
-  );
+    return daysInMonth.map((date) => date.toISOString().split("T")[0]);
+  }, []);
 
-  const secondaryAxes = useMemo(
-    (): AxisOptions<MyDatum>[] => [
-      {
-        getValue: (datum) => datum.average,
-        elementType: "bar",
-      },
-    ],
-    []
-  );
+  const chartData = useMemo(() => {
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Saldo",
+          data: labels.map((label) => transactionsPerDay[label] || 0), // Map transaction amount to corresponding date
+          fill: false,
+          borderColor: "#0284C7",
+          tension: 0,
+        },
+      ],
+    };
+  }, [transactionsPerDay, labels]);
 
-  return (
-    <Chart
-      options={{
-        data,
-        primaryAxis,
-        secondaryAxes,
-        dark: true,
-      }}
-    />
-  );
+  return <Line data={chartData} options={options} />;
 }

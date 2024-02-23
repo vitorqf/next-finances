@@ -13,10 +13,12 @@ export function formatTime(timestamp: string) {
 
   const weekDay = weekDays[date.getDay()];
 
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const hours = ("0" + date.getHours()).slice(-2);
   const minutes = ("0" + date.getMinutes()).slice(-2);
 
-  const formattedTime = `${weekDay} ${hours}:${minutes}`;
+  const formattedTime = `${day}/${month}\n${hours}:${minutes}`;
 
   return formattedTime;
 }

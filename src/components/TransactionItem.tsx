@@ -16,7 +16,9 @@ export function TransactionItem({ transaction }: { transaction: Model }) {
           {formatAmout(Math.abs(transaction.amount))}
         </p>
       </div>
-      <p className="text-slate-400">{formatTime(transaction.date)}</p>
+      <p className="text-slate-400 whitespace-break-spaces">
+        {formatTime(transaction.date)}
+      </p>
       <button>
         <BiPencil className="text-gray-400" size={24} />
       </button>

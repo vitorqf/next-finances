@@ -30,12 +30,14 @@ export default async function Home() {
 
         <section className="flex flex-1 flex-col gap-8">
           <div>
-            <SectionTitle text="Custos ao longo do tempo" />
+            <SectionTitle text="Saldo ao longo do tempo" />
             <p className="text-slate-400">
-              Compare os custos ao longo do tempo
+              Compare os gastos ao longo do tempo
             </p>
           </div>
-          <BalanceChart transactions={transactions} />
+          <div className="flex-1">
+            <BalanceChart transactions={transactions} />
+          </div>
         </section>
       </div>
     </div>
