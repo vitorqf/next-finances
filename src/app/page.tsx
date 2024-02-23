@@ -1,6 +1,7 @@
 import { Card } from "@/components/Card";
 import { Header } from "@/components/Header";
 import { RecentTransactions } from "@/components/RecentTransactions";
+import { SectionTitle } from "@/components/SectionTitle";
 import api from "@/lib/api";
 
 export default async function Home() {
@@ -13,7 +14,7 @@ export default async function Home() {
         subtitle="Bem-vindo(a) de volta, Vitor!"
         actions={<button>Click me</button>}
       />
-      <div className="py-8 flex items-center gap-16">
+      <div className="py-8 flex gap-16">
         <section className="flex flex-col gap-8">
           <Card
             type="Crédito"
@@ -21,9 +22,18 @@ export default async function Home() {
             title="Cartão novo"
             digits={1234}
           />
-          <RecentTransactions transactions={transactions.slice(0, 6)} />
+          {transactions && (
+            <RecentTransactions transactions={transactions.slice(0, 6)} />
+          )}
         </section>
+
         <section className="flex flex-1 flex-col gap-8">
+          <div>
+            <SectionTitle text="Custos ao longo do tempo" />
+            <p className="text-slate-400">
+              Compare os custos ao longo do tempo
+            </p>
+          </div>
           <Card type="Crédito" flag="visa" title="Cartão novo" digits={5678} />
           <Card
             type="Crédito"

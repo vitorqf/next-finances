@@ -1,5 +1,6 @@
 import { Transaction } from "@/models/Transaction";
 import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
+import { SectionTitle } from "./SectionTitle";
 import { TransactionItem } from "./TransactionItem";
 
 export function RecentTransactions({
@@ -8,9 +9,9 @@ export function RecentTransactions({
   transactions: Transaction[];
 }) {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg py-4 font-semibold">Transações recentes</h2>
+        <SectionTitle text="Transações recentes" />
         <PiDotsThreeOutlineVerticalFill className="text-gray-400" />
       </div>
       <ul>
