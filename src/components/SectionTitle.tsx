@@ -1,3 +1,11 @@
-export function SectionTitle({ text }: { text: string }) {
-  return <h2 className="text-lg font-semibold">{text}</h2>;
+interface SectionTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  text: string;
+}
+
+export function SectionTitle({ text, ...others }: SectionTitleProps) {
+  return (
+    <h2 className="text-lg font-semibold" {...others}>
+      {text}
+    </h2>
+  );
 }

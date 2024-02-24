@@ -5,47 +5,53 @@ import { CategoryBadge } from "./CategoryBadge";
 
 export function TransactionTable({
   transactions,
+  search,
 }: {
   transactions: Transaction[];
+  search: string;
 }) {
   return (
-    <div className="box-border h-full max-h-80 overflow-y-auto rounded-lg border-l-2 border-r-2 border-t-2 border-white border-opacity-10 scrollbar-thin scrollbar-track-slate-600 scrollbar-thumb-slate-300">
-      <table className="w-full ">
-        <thead>
-          <tr className="border-b-2 border-white border-opacity-10">
-            <th className="px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
-              Descrição
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
-              Valor
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
-              Categoria
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
-              Data
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction) => (
+    <table className="w-full">
+      <thead>
+        <tr className="border-b-2 border-white border-opacity-10">
+          <th className="w-96 px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
+            Descrição
+          </th>
+          <th className="w-60 px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
+            Valor
+          </th>
+          <th className="w-60 px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
+            Categoria
+          </th>
+          <th className="w-60 px-6 py-3 text-left text-sm font-semibold leading-5 text-slate-400">
+            Data
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {transactions
+          .filter((transaction) =>
+            transaction.title.toLowerCase().includes(search.toLowerCase()),
+          )
+          .map((transaction) => (
             <tr key={transaction.id}>
-              <td className="border-b-2 border-white border-opacity-10 p-6 font-medium">
+              <td className="w-96 border-b-2 border-white border-opacity-10 p-6 font-medium">
                 {transaction.title}
               </td>
               <td
-                className={`border-b-2 border-white border-opacity-10 p-6 font-medium ${
+                className={`w-60 border-b-2 border-white border-opacity-10 p-6 font-medium ${
                   transaction.amount > 0 ? "text-emerald-600" : "text-slate-400"
                 }`}
               >
                 {formatAmout(Math.abs(transaction.amount))}
               </td>
 
-              <td className="border-b-2 border-white border-opacity-10 p-6 text-slate-400">
+              <td className="w-60 border-b-2 border-white border-opacity-10 p-6 text-slate-400">
                 <CategoryBadge category={transaction.category} />
               </td>
 
-              <td className="border-b-2 border-white border-opacity-10 p-6 text-slate-400">
+              <td className="w-60 whitespace-break-spaces border-b-2 border-white border-opacity-10 p-6 text-slate-400">
                 {formatTime(transaction.date)}
               </td>
 
@@ -56,8 +62,7 @@ export function TransactionTable({
               </td>
             </tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+      </tbody>
+    </table>
   );
 }

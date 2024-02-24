@@ -3,11 +3,11 @@ export function formatTime(timestamp: string) {
 
   const weekDays = [
     "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
     "Sábado",
   ];
 
@@ -18,7 +18,7 @@ export function formatTime(timestamp: string) {
   const hours = ("0" + date.getHours()).slice(-2);
   const minutes = ("0" + date.getMinutes()).slice(-2);
 
-  const formattedTime = `${day}/${month}\n${hours}:${minutes}`;
+  const formattedTime = `${weekDay}\n${day}/${month}`;
 
   return formattedTime;
 }

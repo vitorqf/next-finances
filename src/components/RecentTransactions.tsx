@@ -11,8 +11,7 @@ export function RecentTransactions({
 }) {
   const totalBalance = useMemo(() => {
     return transactions.reduce((acc, transaction) => {
-      console.log("acc", acc);
-      return acc + transaction.amount;
+      return Math.abs(acc) + Math.abs(transaction.amount);
     }, 0);
   }, [transactions]);
 
@@ -24,6 +23,7 @@ export function RecentTransactions({
 
   const totalOutcome = useMemo(() => {
     return transactions.reduce((acc, transaction) => {
+      console.log(acc, transaction.amount);
       return acc + (transaction.amount < 0 ? transaction.amount : 0);
     }, 0);
   }, [transactions]);
@@ -44,13 +44,15 @@ export function RecentTransactions({
           </span>
         </li>
         <li className="flex items-center justify-between">
-          <span className="text-sm font-medium leading-4">Entrada</span>
-          <span className="text-2xl font-semibold leading-8 text-emerald-500">
+          <span className="text-sm font-medium leading-4 text-emerald-500">
+            Entrada
+          </span>
+          <span className="text-2xl font-semibold leading-8">
             {formatAmout(totalIncome)}
           </span>
         </li>
         <li className="flex items-center justify-between">
-          <span className="text-sm font-medium leading-4  text-rose-500">
+          <span className="text-sm font-medium leading-4 text-rose-500">
             Saída
           </span>
           <span className="text-2xl font-semibold leading-8">

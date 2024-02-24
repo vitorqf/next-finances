@@ -15,7 +15,31 @@ body {
 }
 
 .btn-secondary {
-  @apply bg-gray-600 text-white hover:bg-gray-700;
+  @apply bg-[#343B45] text-white hover:bg-gray-700;
+}
+
+.badge-serviços {
+  @apply bg-green-500 bg-opacity-50 text-white;
+}
+
+.badge-saúde {
+  @apply bg-red-500 bg-opacity-50 text-white;
+}
+
+.badge-outros {
+  @apply bg-blue-500 bg-opacity-50 text-white;
+}
+
+.badge-lazer {
+  @apply bg-purple-500 bg-opacity-50 text-white;
+}
+
+.badge-eletrônicos {
+  @apply bg-yellow-500 bg-opacity-50 text-white;
+}
+
+.badge-restaurante {
+  @apply bg-gray-500 bg-opacity-50 text-white;
 }
 
 @layer utilities {
