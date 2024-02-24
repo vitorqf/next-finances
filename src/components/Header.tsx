@@ -10,12 +10,12 @@ export function Header({
   actions: ReactNode;
 }) {
   return (
-    <header className="py-4 border-b-2 border-b-white border-opacity-10 flex items-center justify-between">
+    <header className="flex items-center justify-between border-b-2 border-b-white border-opacity-10 py-4">
       <div>
         <h1 className="text-3xl font-bold">{title}</h1>
         <p className="text-slate-400">{subtitle}</p>
       </div>
-      <div className="flex gap-4 mt-4">{actions}</div>
+      <div className="mt-4 flex gap-4">{actions}</div>
     </header>
   );
 }

@@ -5,9 +5,9 @@ import { SidebarButton } from "./SidebarButton";
 
 export function Sidebar() {
   return (
-    <div className="bg-gray-950 w-20 p-4 border-r-2 min-h-screen max-h-screen border-r-white border-opacity-10 flex flex-col items-center gap-2 box-border">
+    <div className="box-border flex max-h-screen min-h-screen w-20 flex-col items-center gap-2 border-r-2 border-r-white border-opacity-10 bg-gray-950 p-4">
       <Image src="/vercel.svg" alt="Create Next App" width={200} height={200} />
-      <nav className="flex flex-col h-full justify-between">
+      <nav className="flex h-full flex-col justify-between">
         <ul>
           <li>
             <SidebarButton

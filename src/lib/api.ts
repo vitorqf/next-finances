@@ -12,7 +12,7 @@ async function getTransactions({
   filterBy?: string;
 } = {}) {
   const response = await fetch(
-    `${BASE_URL}/transactions?page=${page}&limit=${limit}&filter=${filter}&filterBy=${filterBy}`
+    `${BASE_URL}/transactions?page=${page}&limit=${limit}&filter=${filter}&filterBy=${filterBy}`,
   ).then((res) => res.json());
   return {
     results: response.results,

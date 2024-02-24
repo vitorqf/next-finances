@@ -12,14 +12,13 @@ import { TbRefresh } from "react-icons/tb";
 export default async function Home() {
   const cards: CardModel[] = await api.cards.get();
   const selectedCard = cards[1];
-  console.log(cards);
   const { results: transactions } = await api.transactions.get({
     filter: "card",
     filterBy: selectedCard.title,
   });
 
   return (
-    <div className="bg-gray-950 h-full max-h-screen flex-1 p-8 box-border">
+    <div className="box-border h-full max-h-screen flex-1 bg-gray-950 p-8">
       <Header
         title="Seus cartões"
         subtitle="Bem-vindo(a) de volta, Vitor!"
@@ -34,7 +33,7 @@ export default async function Home() {
           </>
         }
       />
-      <div className="py-8 flex gap-16 h-full">
+      <div className="flex h-full gap-16 py-8">
         <section className="flex flex-col gap-8">
           <Card
             type={selectedCard.type}
@@ -47,9 +46,9 @@ export default async function Home() {
           )}
         </section>
 
-        <section className="flex flex-1 h-full flex-col gap-8">
+        <section className="flex h-full flex-1 flex-col gap-8">
           <div>
-            <SectionTitle text="Saldo ao longo do tempo" />
+            <SectionTitle text="1s ao longo do tempo" />
             <p className="text-slate-400">Compare os gastos ao longo do mês</p>
           </div>
           <div className="h-72">

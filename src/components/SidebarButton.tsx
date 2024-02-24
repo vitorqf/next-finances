@@ -13,7 +13,7 @@ export function SidebarButton({
   return (
     <Link
       href={label}
-      className={`h-12 w-12 flex justify-center items-center rounded-lg hover:bg-gray-800 transition-colors duration-300 ${
+      className={`flex h-12 w-12 items-center justify-center rounded-lg transition-colors duration-300 hover:bg-gray-800 ${
         active ? "bg-gray-800 hover:bg-gray-700" : ""
       }`}
     >

@@ -21,7 +21,7 @@ Chart.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export const options = {
@@ -45,22 +45,25 @@ export function BalanceChart({
   transactions: Transaction[];
 }) {
   const transactionsPerDay = useMemo(() => {
-    return transactions.reduce((acc, transaction) => {
-      if (acc[transaction.date]) {
-        acc[transaction.date] += transaction.amount / 100;
-      } else {
-        acc[transaction.date] = transaction.amount / 100;
-      }
+    return transactions.reduce(
+      (acc, transaction) => {
+        if (acc[transaction.date]) {
+          acc[transaction.date] += transaction.amount / 100;
+        } else {
+          acc[transaction.date] = transaction.amount / 100;
+        }
 
-      return acc;
-    }, {} as Record<string, number>);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
   }, [transactions]);
 
   const labels = useMemo(() => {
     const currentDate = new Date();
     const daysInMonth = getDaysInMonth(
       currentDate.getMonth(),
-      currentDate.getFullYear()
+      currentDate.getFullYear(),
     );
 
     return daysInMonth.map((date) => date.toISOString().split("T")[0]);

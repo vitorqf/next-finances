@@ -4,7 +4,7 @@ import { BiPencil } from "react-icons/bi";
 
 export function TransactionItem({ transaction }: { transaction: Model }) {
   return (
-    <li className="w-full flex justify-between items-center text-sm py-4 font-medium ">
+    <li className="flex w-full items-center justify-between py-4 text-sm font-medium ">
       <div>
         <h4>{transaction.title}</h4>
         <p
@@ -16,7 +16,7 @@ export function TransactionItem({ transaction }: { transaction: Model }) {
           {formatAmout(Math.abs(transaction.amount))}
         </p>
       </div>
-      <p className="text-slate-400 w-24 whitespace-break-spaces">
+      <p className="w-24 whitespace-break-spaces text-slate-400">
         {formatTime(transaction.date)}
       </p>
       <button>
