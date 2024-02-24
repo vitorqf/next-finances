@@ -1,7 +1,11 @@
 import { Transaction } from "@/models/Transaction";
-import { formatAmout, formatTime } from "@/utils";
+import { formatAmout } from "@/utils";
+import moment from "moment";
+import "moment/locale/pt-br";
 import { BiPencil } from "react-icons/bi";
 import { CategoryBadge } from "./CategoryBadge";
+
+moment.locale("pt-br");
 
 export function TransactionTable({
   transactions,
@@ -52,7 +56,7 @@ export function TransactionTable({
               </td>
 
               <td className="w-60 whitespace-break-spaces border-b-2 border-white border-opacity-10 p-6 text-slate-400">
-                {formatTime(transaction.date)}
+                {moment(transaction.date).format("ddd[\n]DD/MM")}
               </td>
 
               <td className="border-b-2 border-white border-opacity-10 p-6 text-center text-slate-400">

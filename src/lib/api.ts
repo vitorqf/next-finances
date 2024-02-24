@@ -5,14 +5,16 @@ async function getTransactions({
   limit = 10,
   filter = "",
   filterBy = "",
+  date = new Date(),
 }: {
   page?: number;
   limit?: number;
   filter?: string;
   filterBy?: string;
+  date?: Date;
 } = {}) {
   const response = await fetch(
-    `${BASE_URL}/transactions?page=${page}&limit=${limit}&filter=${filter}&filterBy=${filterBy}`,
+    `${BASE_URL}/transactions?page=${page}&limit=${limit}&filter=${filter}&filterBy=${filterBy}&date=${date}`,
   ).then((res) => res.json());
   return {
     results: response.results,

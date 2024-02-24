@@ -40,7 +40,6 @@ export function Content({
     link.download = `${card.title}-${new Date().getTime()}-transactions.csv`;
     link.href = `data:text/csv;charset=utf-8,${csv}`;
     link.click();
-    console.log("Exporting to CSV");
   }, [card.title, transactions]);
 
   return (

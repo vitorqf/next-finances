@@ -23,7 +23,6 @@ export function RecentTransactions({
 
   const totalOutcome = useMemo(() => {
     return transactions.reduce((acc, transaction) => {
-      console.log(acc, transaction.amount);
       return acc + (transaction.amount < 0 ? transaction.amount : 0);
     }, 0);
   }, [transactions]);
@@ -60,9 +59,6 @@ export function RecentTransactions({
           </span>
         </li>
       </ul>
-      <button className="w-full text-sm font-medium text-indigo-400">
-        Ver todas transações
-      </button>
     </div>
   );
 }

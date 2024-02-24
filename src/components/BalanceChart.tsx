@@ -1,5 +1,3 @@
-"use client";
-
 import { Transaction } from "@/models/Transaction";
 import {
   CategoryScale,
@@ -11,6 +9,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import moment from "moment";
 import { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 
@@ -24,20 +23,10 @@ Chart.register(
   Legend,
 );
 
-export const options = {
+const options = {
   responsive: true,
   maintainAspectRatio: false,
 };
-
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 1);
-  const days = [];
-  while (date.getMonth() === month) {
-    days.push(new Date(date));
-    date.setDate(date.getDate() + 1);
-  }
-  return days;
-}
 
 export function BalanceChart({
   transactions,
@@ -47,11 +36,9 @@ export function BalanceChart({
   const transactionsPerDay = useMemo(() => {
     return transactions.reduce(
       (acc, transaction) => {
-        if (acc[transaction.date]) {
-          acc[transaction.date] += transaction.amount / 100;
-        } else {
-          acc[transaction.date] = transaction.amount / 100;
-        }
+        const dateKey = moment(transaction.date).format("YYYY-MM-DD");
+
+        acc[dateKey] = (acc[dateKey] || 0) + transaction.amount / 100;
 
         return acc;
       },
@@ -60,13 +47,16 @@ export function BalanceChart({
   }, [transactions]);
 
   const labels = useMemo(() => {
-    const currentDate = new Date();
-    const daysInMonth = getDaysInMonth(
-      currentDate.getMonth(),
-      currentDate.getFullYear(),
+    const currentDate = moment();
+    const daysInMonth = Array.from(
+      { length: currentDate.daysInMonth() },
+      (_, index) =>
+        currentDate
+          .date(index + 1)
+          .toISOString()
+          .split("T")[0],
     );
-
-    return daysInMonth.map((date) => date.toISOString().split("T")[0]);
+    return daysInMonth;
   }, []);
 
   const chartData = useMemo(() => {
@@ -75,7 +65,7 @@ export function BalanceChart({
       datasets: [
         {
           label: "Saldo",
-          data: labels.map((label) => transactionsPerDay[label] || 0), // Map transaction amount to corresponding date
+          data: labels.map((label) => transactionsPerDay[label] || 0),
           borderColor: "#0284C7",
           tension: 0.1,
         },

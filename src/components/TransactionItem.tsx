@@ -1,5 +1,5 @@
 import { Transaction as Model } from "@/models/Transaction";
-import { formatAmout, formatTime } from "@/utils";
+import { formatAmout } from "@/utils";
 import { BiPencil } from "react-icons/bi";
 
 export function TransactionItem({ transaction }: { transaction: Model }) {
@@ -17,7 +17,7 @@ export function TransactionItem({ transaction }: { transaction: Model }) {
         </p>
       </div>
       <p className="w-24 whitespace-break-spaces text-slate-400">
-        {formatTime(transaction.date)}
+        {transaction.date}
       </p>
       <button>
         <BiPencil className="text-gray-400" size={24} />
