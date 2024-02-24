@@ -38,7 +38,9 @@ export function BalanceChart({
       (acc, transaction) => {
         const dateKey = moment(transaction.date).format("YYYY-MM-DD");
 
-        acc[dateKey] = (acc[dateKey] || 0) + transaction.amount / 100;
+        if (transaction.amount < 0) {
+          acc[dateKey] = (acc[dateKey] || 0) + transaction.amount / 100;
+        }
 
         return acc;
       },
