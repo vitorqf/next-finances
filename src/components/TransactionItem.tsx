@@ -8,7 +8,7 @@ export function TransactionItem({ transaction }: { transaction: Model }) {
       <div>
         <h4>{transaction.title}</h4>
         <p
-          className={`${
+          className={`w-36 ${
             transaction.amount > 0 ? "text-emerald-600" : "text-slate-400"
           }`}
         >
@@ -16,7 +16,7 @@ export function TransactionItem({ transaction }: { transaction: Model }) {
           {formatAmout(Math.abs(transaction.amount))}
         </p>
       </div>
-      <p className="text-slate-400 whitespace-break-spaces">
+      <p className="text-slate-400 w-24 whitespace-break-spaces">
         {formatTime(transaction.date)}
       </p>
       <button>

@@ -8,4 +8,5 @@ export interface Card {
   created_at: string;
   updated_at: string;
   user: User;
+  last_digits: number;
 }

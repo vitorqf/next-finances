@@ -26,15 +26,7 @@ Chart.register(
 
 export const options = {
   responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Chart.js Line Chart",
-    },
-  },
+  maintainAspectRatio: false,
 };
 
 function getDaysInMonth(month: number, year: number) {
@@ -76,14 +68,13 @@ export function BalanceChart({
 
   const chartData = useMemo(() => {
     return {
-      labels,
+      labels: labels.map((label) => label.split("-")[2]),
       datasets: [
         {
           label: "Saldo",
           data: labels.map((label) => transactionsPerDay[label] || 0), // Map transaction amount to corresponding date
-          fill: false,
           borderColor: "#0284C7",
-          tension: 0,
+          tension: 0.1,
         },
       ],
     };
