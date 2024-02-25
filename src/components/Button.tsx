@@ -13,7 +13,7 @@ export function Button({
   ...others
 }: ButtonProps) {
   return (
-    <button className={`btn btn-${variant}`} {...others}>
+    <button className={`btn btn-${variant}`}>
       {icon}
       {title}
     </button>
