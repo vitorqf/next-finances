@@ -18,6 +18,10 @@ body {
   @apply bg-[#343B45] text-white hover:bg-gray-700;
 }
 
+.btn-secondary-active {
+  @apply bg-[#2A303B] text-white hover:bg-gray-700;
+}
+
 .badge-serviços {
   @apply bg-green-500 bg-opacity-50 text-white;
 }

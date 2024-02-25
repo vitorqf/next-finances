@@ -5,7 +5,7 @@ import { Content } from "./content";
 
 export default async function Home() {
   const cards: CardModel[] = await api.cards.get();
-  const currentMonth = moment().toDate();
+  const currentMonth = moment(new Date()).toDate();
   const selectedCard = cards[0];
   const { results: transactions, total } = await api.transactions.get({
     limit: 999,

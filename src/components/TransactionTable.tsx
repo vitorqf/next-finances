@@ -10,9 +10,11 @@ moment.locale("pt-br");
 export function TransactionTable({
   transactions,
   search,
+  tab,
 }: {
   transactions: Transaction[];
   search: string;
+  tab: string;
 }) {
   return (
     <table className="w-full">
@@ -38,6 +40,18 @@ export function TransactionTable({
           .filter((transaction) =>
             transaction.title.toLowerCase().includes(search.toLowerCase()),
           )
+          .filter((transaction) => {
+            switch (tab) {
+              case "Todas":
+                return true;
+              case "Entrada":
+                return transaction.amount > 0;
+              case "Saída":
+                return transaction.amount < 0;
+              default:
+                return true;
+            }
+          })
           .map((transaction) => (
             <tr key={transaction.id}>
               <td className="w-96 border-b-2 border-white border-opacity-10 p-6 font-medium">

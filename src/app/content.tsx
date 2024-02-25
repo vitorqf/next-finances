@@ -3,16 +3,17 @@
 import { BalanceChart } from "@/components/BalanceChart";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { CardReview } from "@/components/CardReview";
 import { Header } from "@/components/Header";
-import { RecentTransactions } from "@/components/RecentTransactions";
+import { Search } from "@/components/Search";
 import { SectionTitle } from "@/components/SectionTitle";
+import { Tabs } from "@/components/Tabs";
 import { TransactionTable } from "@/components/TransactionTable";
 import { Card as CardModel } from "@/models/Card";
 import { Transaction } from "@/models/Transaction";
 import { formatAmout } from "@/utils";
 import { generateCsv, mkConfig } from "export-to-csv";
-import { useCallback, useState } from "react";
-import { IoSearchSharp } from "react-icons/io5";
+import { useCallback, useMemo, useState } from "react";
 import { RiDownloadCloudLine } from "react-icons/ri";
 import { TbRefresh } from "react-icons/tb";
 
@@ -25,6 +26,21 @@ export function Content({
   card: CardModel;
   total: number;
 }) {
+  const tabs = useMemo(() => ["Todas", "Entrada", "Saída"], []);
+  const actions = useMemo(
+    () => (
+      <>
+        <Button
+          title="Ver extrato"
+          variant="secondary"
+          icon={<TbRefresh size={20} />}
+        />
+        <Button title="Adicionar cartão" />
+      </>
+    ),
+    [],
+  );
+  const [activeTab, setActiveTab] = useState(0);
   const [search, setSearch] = useState("");
 
   const handleExportToCSV = useCallback(() => {
@@ -42,21 +58,16 @@ export function Content({
     link.click();
   }, [card.title, transactions]);
 
+  const handleSetActiveTab = useCallback((index: number) => {
+    setActiveTab(index);
+  }, []);
+
   return (
     <div className="box-border h-full max-h-screen flex-1 bg-gray-950 p-4">
       <Header
         title="Seus cartões"
         subtitle="Bem-vindo(a) de volta, Vitor!"
-        actions={
-          <>
-            <Button
-              title="Ver extrato"
-              variant="secondary"
-              icon={<TbRefresh size={20} />}
-            />
-            <Button title="Adicionar cartão" />
-          </>
-        }
+        actions={actions}
       />
       <div className="flex h-full gap-16 py-8">
         <section className="flex flex-col gap-8">
@@ -66,7 +77,7 @@ export function Content({
             title={card.title}
             digits={card.last_digits}
           />
-          {transactions && <RecentTransactions transactions={transactions} />}
+          {transactions && <CardReview transactions={transactions} />}
         </section>
 
         <section className="flex h-full flex-1 flex-col gap-8">
@@ -81,7 +92,7 @@ export function Content({
             <div className="sticky right-0 top-0 flex items-center justify-between border-b-2 border-white border-opacity-10 bg-gray-950 p-6">
               <div className="flex items-center gap-2">
                 <SectionTitle text="Últimas transações" />
-                <p className="rounded-md border-2 border-slate-600 px-2 py-1 text-xs font-medium text-slate-100">
+                <p className="rounded-md border-2 border-white border-opacity-20 px-2 py-1 text-xs font-medium text-slate-100">
                   {total} transações
                 </p>
               </div>
@@ -95,21 +106,18 @@ export function Content({
               </div>
             </div>
             <div className="flex items-center justify-between px-6 py-3">
-              <div />
-
-              <div className="flex items-center gap-2 rounded-lg border-2 border-white border-opacity-20 px-3 py-2 text-slate-400 focus-within:ring-2 focus-within:ring-indigo-500">
-                <IoSearchSharp size={20} />
-
-                <input
-                  type="text"
-                  placeholder="Pesquisar"
-                  className="border-none bg-gray-950 text-slate-100 placeholder-slate-400 outline-none"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
+              <Tabs
+                tabs={tabs}
+                activeTab={activeTab}
+                setActiveTab={handleSetActiveTab}
+              />
+              <Search search={search} setSearch={setSearch} />
             </div>
-            <TransactionTable transactions={transactions} search={search} />
+            <TransactionTable
+              transactions={transactions}
+              search={search}
+              tab={tabs[activeTab]}
+            />
           </div>
         </section>
       </div>
