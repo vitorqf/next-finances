@@ -1,5 +1,7 @@
+import { AuthProvider } from "@/hooks/useAuth";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +19,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} flex`}>
-        <main className="flex flex-1 overflow-hidden">{children}</main>
+        <AuthProvider>
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  width: "100%",
+                  maxWidth: "30rem",
+                  fontWeight: "semibold",
+                  background: "#F6FFF9",
+                  color: "#2F3F53",
+                  border: "2px solid #48C1B5",
+                },
+              },
+              error: {
+                style: {
+                  width: "100%",
+                  maxWidth: "30rem",
+                  fontWeight: "semibold",
+                  background: "#FFF6F6",
+                  color: "#2F3F53",
+                  border: "2px solid #F4B0A1",
+                },
+              },
+            }}
+          />
+          <main className="flex flex-1 overflow-hidden">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

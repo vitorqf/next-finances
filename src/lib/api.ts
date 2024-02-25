@@ -1,5 +1,19 @@
 export const BASE_URL = "http://localhost:3000";
 
+async function login({ email, password }: { email: string; password: string }) {
+  const response = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
+}
+
 async function getTransactions({
   page = 0,
   limit = 10,
@@ -39,6 +53,9 @@ const api = {
   },
   cards: {
     get: getCards,
+  },
+  auth: {
+    login,
   },
 };
 

@@ -5,9 +5,13 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { GoogleButton } from "@/components/GoogleButton";
 import { Input } from "@/components/Input";
 import { OrSplitter } from "@/components/OrSplitter";
+import useAuth from "@/hooks/useAuth";
+import api from "@/lib/api";
 import { Form, Formik } from "formik";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import toast from "react-hot-toast";
 import { HiOutlineLockClosed, HiOutlineMail } from "react-icons/hi";
 import * as Yup from "yup";
 
@@ -24,14 +28,28 @@ const FormSchema = Yup.object().shape({
 });
 
 export default function Entrar() {
+  const router = useRouter();
+  const { setUser } = useAuth();
+
   const initialValues: FormStructure = {
     email: "",
     password: "",
   };
 
-  const handleSubmit = useCallback((values: FormStructure) => {
-    console.log(values);
-  }, []);
+  const handleSubmit = useCallback(
+    async (values: FormStructure) => {
+      const user = await api.auth.login(values);
+      if (user) {
+        setUser(user);
+        router.push("/");
+      } else {
+        toast.error("E-mail ou senha inválidos.", {
+          id: "login-error",
+        });
+      }
+    },
+    [setUser, router],
+  );
 
   return (
     <main className="flex max-h-screen min-h-screen min-w-full flex-col items-center justify-center gap-8 bg-gray-900">
@@ -55,7 +73,7 @@ export default function Entrar() {
         validationSchema={FormSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, values, handleChange, errors }) => (
+        {({ handleSubmit, values, handleChange, errors, touched }) => (
           <Form className="flex w-[340px] flex-col gap-4">
             <Input
               name="email"
@@ -64,7 +82,7 @@ export default function Entrar() {
               type="email"
               value={values.email}
               onChange={handleChange}
-              errors={errors.email}
+              errors={touched.email && errors.email}
               autoComplete="email"
             />
             <Input
@@ -74,7 +92,7 @@ export default function Entrar() {
               type="password"
               value={values.password}
               onChange={handleChange}
-              errors={errors.password}
+              errors={touched.password && errors.password}
               autoComplete="current-password"
             />
             <Link
