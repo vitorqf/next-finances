@@ -2,7 +2,6 @@ import { Transaction } from "@/models/Transaction";
 import {
   CategoryScale,
   Chart,
-  Legend,
   LineElement,
   LinearScale,
   PointElement,
@@ -20,7 +19,6 @@ Chart.register(
   LineElement,
   Title,
   Tooltip,
-  Legend,
 );
 
 const options = {
@@ -39,7 +37,8 @@ export function BalanceChart({
         const dateKey = moment(transaction.date).format("YYYY-MM-DD");
 
         if (transaction.amount < 0) {
-          acc[dateKey] = (acc[dateKey] || 0) + transaction.amount / 100;
+          acc[dateKey] =
+            (acc[dateKey] || 0) + Math.abs(transaction.amount) / 100;
         }
 
         return acc;
@@ -66,7 +65,7 @@ export function BalanceChart({
       labels: labels.map((label) => label.split("-")[2]),
       datasets: [
         {
-          label: "Saldo",
+          label: "Gasto",
           data: labels.map((label) => transactionsPerDay[label] || 0),
           borderColor: "#0284C7",
           tension: 0.1,
