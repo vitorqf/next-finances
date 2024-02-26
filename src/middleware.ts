@@ -3,6 +3,7 @@ import { User } from "./models/User";
 import { BASE_URL } from "./lib/api";
 
 const PRIVATE_ROUTES = ["/dashboard"];
+const AUTH_ROUTES = ["/entrar", "/cadastrar"];
 
 async function validateUserToken(user: User) {
   try {
@@ -26,13 +27,21 @@ async function validateUserToken(user: User) {
 
 export async function middleware(req: NextRequest) {
   const isAccessingPrivateRoute = PRIVATE_ROUTES.includes(req.nextUrl.pathname);
+  const isAccessingAuthRoute = AUTH_ROUTES.includes(req.nextUrl.pathname);
   const user: User = JSON.parse(req.cookies.get("@app:user")?.value || "{}");
+
+  if (isAccessingAuthRoute) {
+    if (user) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    return NextResponse.next();
+  }
 
   if (!isAccessingPrivateRoute) {
     return NextResponse.next();
   }
 
-  if (!user.accessToken) {
+  if (!user) {
     return NextResponse.redirect(new URL("/entrar", req.url));
   }
 
@@ -44,5 +53,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher:
-    "/((?!api|_next/static|_next/image|robots.txt|public|images|entrar|manifest.json|sw.js|404|assets|favicon.ico|workbox-*).*)",
+    "/((?!api|_next/static|_next/image|robots.txt|public|images|manifest.json|sw.js|404|assets|favicon.ico|workbox-*).*)",
 };

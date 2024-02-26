@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -19,6 +19,7 @@ const FormSchema = Yup.object().shape({
 
 export function useEntrar() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
 
   const initialValues: FormStructure = {
@@ -29,6 +30,7 @@ export function useEntrar() {
   const handleSubmitLogin = useCallback(
     async (values: FormStructure) => {
       try {
+        setLoading(true);
         const user = await api.auth.login(values);
         if (user) {
           setUser(user);
@@ -36,6 +38,8 @@ export function useEntrar() {
         }
       } catch (error) {
         toast.error("Usuário ou senha incorretos.");
+      } finally {
+        setLoading(false);
       }
     },
     [setUser, router],
@@ -45,5 +49,6 @@ export function useEntrar() {
     initialValues,
     FormSchema,
     handleSubmitLogin,
+    loginLoading: loading,
   };
 }

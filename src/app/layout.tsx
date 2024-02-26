@@ -20,7 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <NextTopLoader color="#6A3AF1" showSpinner={false} height={4} />
         <AuthProvider>
           <Toaster
             toastOptions={{
@@ -46,6 +45,7 @@ export default function RootLayout({
               },
             }}
           />
+          <NextTopLoader color="#4F46E5" showSpinner={false} height={4} />
           {children}
         </AuthProvider>
       </body>

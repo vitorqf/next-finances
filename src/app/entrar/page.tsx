@@ -11,7 +11,8 @@ import { HiOutlineLockClosed, HiOutlineMail } from "react-icons/hi";
 import { useEntrar } from "./useEntrar";
 
 export default function Entrar() {
-  const { initialValues, FormSchema, handleSubmitLogin } = useEntrar();
+  const { initialValues, FormSchema, handleSubmitLogin, loginLoading } =
+    useEntrar();
   return (
     <main className="flex max-h-screen min-h-screen min-w-full flex-col items-center justify-center gap-8 bg-gray-900">
       <div className="flex flex-col gap-4 text-center">
@@ -60,7 +61,12 @@ export default function Entrar() {
             >
               Esqueceu sua senha?
             </Link>
-            <Button className="text-center" title="Entrar" type="submit" />
+            <Button
+              className="text-center"
+              title="Entrar"
+              type="submit"
+              disabled={loginLoading}
+            />
             <OrSplitter />
             <GoogleButton />
             <FacebookButton />
