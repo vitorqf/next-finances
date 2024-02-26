@@ -4,14 +4,13 @@ import moment from "moment";
 import { cookies } from "next/headers";
 import { Content } from "./content";
 
-export default async function Home() {
+export default async function Dashboard() {
   const user = cookies().get("@app:user");
   if (!user) {
     return null;
   }
   const parsedUser = JSON.parse(user.value);
   const cards: Card[] = await api.cards.get(parsedUser.accessToken);
-  console.log(cards);
   const currentMonth = moment(new Date()).toDate();
   const selectedCard = cards[0];
   const { results: transactions, total } = await api.transactions.get({

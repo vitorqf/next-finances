@@ -31,11 +31,13 @@ const AuthContext = createContext<AuthContextProps>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const user = getCookie("@app:user");
     if (user) {
       setUser(JSON.parse(user));
+      setLoading(false);
     }
   }, []);
 
@@ -43,16 +45,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (user) {
       const parsedUser = JSON.stringify(user);
       setCookie("@app:user", parsedUser);
+      setLoading(false);
     }
   }, [user]);
 
   const logout = useCallback(() => {
     setUser(null);
     setCookie("@app:user", null);
+    setLoading(false);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: null, setUser, logout }}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

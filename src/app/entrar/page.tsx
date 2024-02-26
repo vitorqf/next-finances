@@ -5,52 +5,13 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { GoogleButton } from "@/components/GoogleButton";
 import { Input } from "@/components/Input";
 import { OrSplitter } from "@/components/OrSplitter";
-import useAuth from "@/hooks/useAuth";
-import api from "@/lib/api";
 import { Form, Formik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import toast from "react-hot-toast";
 import { HiOutlineLockClosed, HiOutlineMail } from "react-icons/hi";
-import * as Yup from "yup";
-
-interface FormStructure {
-  email: string;
-  password: string;
-}
-
-const FormSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("E-mail inválido")
-    .required("É necessário que informe um e-mail válido."),
-  password: Yup.string().required("É necessário que informe uma senha válida."),
-});
+import { useEntrar } from "./useEntrar";
 
 export default function Entrar() {
-  const router = useRouter();
-  const { setUser } = useAuth();
-
-  const initialValues: FormStructure = {
-    email: "",
-    password: "",
-  };
-
-  const handleSubmit = useCallback(
-    async (values: FormStructure) => {
-      const user = await api.auth.login(values);
-      if (user) {
-        setUser(user);
-        router.push("/");
-      } else {
-        toast.error("E-mail ou senha inválidos.", {
-          id: "login-error",
-        });
-      }
-    },
-    [setUser, router],
-  );
-
+  const { initialValues, FormSchema, handleSubmitLogin } = useEntrar();
   return (
     <main className="flex max-h-screen min-h-screen min-w-full flex-col items-center justify-center gap-8 bg-gray-900">
       <div className="flex flex-col gap-4 text-center">
@@ -71,10 +32,10 @@ export default function Entrar() {
       <Formik
         initialValues={initialValues}
         validationSchema={FormSchema}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitLogin}
       >
-        {({ handleSubmit, values, handleChange, errors, touched }) => (
-          <Form className="flex w-[340px] flex-col gap-4">
+        {({ values, handleChange, errors, touched }) => (
+          <Form className="flex w-[340px] flex-col gap-4" method="POST">
             <Input
               name="email"
               icon={<HiOutlineMail size={20} />}
@@ -83,7 +44,6 @@ export default function Entrar() {
               value={values.email}
               onChange={handleChange}
               errors={touched.email && errors.email}
-              autoComplete="email"
             />
             <Input
               name="password"
@@ -93,7 +53,6 @@ export default function Entrar() {
               value={values.password}
               onChange={handleChange}
               errors={touched.password && errors.password}
-              autoComplete="current-password"
             />
             <Link
               href="/esqueci-senha"
@@ -101,12 +60,7 @@ export default function Entrar() {
             >
               Esqueceu sua senha?
             </Link>
-            <Button
-              className="text-center"
-              title="Entrar"
-              type="submit"
-              onClick={() => handleSubmit()}
-            />
+            <Button className="text-center" title="Entrar" type="submit" />
             <OrSplitter />
             <GoogleButton />
             <FacebookButton />

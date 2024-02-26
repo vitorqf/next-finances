@@ -66,7 +66,7 @@ export function Content({
   }, []);
 
   return (
-    <>
+    <main className="flex overflow-hidden">
       <Sidebar />
       <div className="box-border h-full max-h-screen flex-1 bg-gray-950 p-4">
         <Header
@@ -129,6 +129,6 @@ export function Content({
           </section>
         </div>
       </div>
-    </>
+    </main>
   );
 }

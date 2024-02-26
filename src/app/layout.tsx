@@ -1,6 +1,7 @@
 import { AuthProvider } from "@/hooks/useAuth";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
@@ -18,7 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex`}>
+      <body className={`${inter.className}`}>
+        <NextTopLoader color="#6A3AF1" showSpinner={false} height={4} />
         <AuthProvider>
           <Toaster
             toastOptions={{
@@ -44,7 +46,7 @@ export default function RootLayout({
               },
             }}
           />
-          <main className="flex flex-1 overflow-hidden">{children}</main>
+          {children}
         </AuthProvider>
       </body>
     </html>
