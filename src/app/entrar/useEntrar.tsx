@@ -1,6 +1,8 @@
+"use client";
+
 import useAuth from "@/hooks/useAuth";
 import api from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
@@ -34,12 +36,11 @@ export function useEntrar() {
         const user = await api.auth.login(values);
         if (user) {
           setUser(user);
+          setLoading(false);
           router.push("/");
         }
       } catch (error) {
         toast.error("Usuário ou senha incorretos.");
-      } finally {
-        setLoading(false);
       }
     },
     [setUser, router],

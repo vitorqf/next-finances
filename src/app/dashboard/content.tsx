@@ -3,6 +3,7 @@
 import { BalanceChart } from "@/components/BalanceChart";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { CardEmpty } from "@/components/CardEmpty";
 import { CardReview } from "@/components/CardReview";
 import { Header } from "@/components/Header";
 import { Loading } from "@/components/Loading";
@@ -22,13 +23,14 @@ import { TbRefresh } from "react-icons/tb";
 
 export function Content({
   transactions,
-  card,
+  cards,
   total,
 }: {
   transactions: Transaction[];
-  card: CardModel;
+  cards: CardModel[];
   total: number;
 }) {
+  const [card, setCard] = useState<CardModel | undefined>(cards[0]);
   const tabs = useMemo(() => ["Todas", "Entrada", "Saída"], []);
   const { user, loading } = useAuth();
   const actions = useMemo(
@@ -44,6 +46,7 @@ export function Content({
     ),
     [],
   );
+
   const [activeTab, setActiveTab] = useState(0);
   const [search, setSearch] = useState("");
 
@@ -57,10 +60,10 @@ export function Content({
     }));
     const csv = generateCsv(csvConfig)(csvData);
     const link = document.createElement("a");
-    link.download = `${card.title}-${new Date().getTime()}-transactions.csv`;
+    link.download = `${new Date().getTime()}-transactions.csv`;
     link.href = `data:text/csv;charset=utf-8,${csv}`;
     link.click();
-  }, [card.title, transactions]);
+  }, [transactions]);
 
   const handleSetActiveTab = useCallback((index: number) => {
     setActiveTab(index);
@@ -72,7 +75,7 @@ export function Content({
       {loading ? (
         <Loading />
       ) : (
-        <div className="box-border h-full max-h-screen flex-1 bg-gray-950 p-4">
+        <div className="box-border h-screen max-h-screen flex-1 bg-gray-950 p-4">
           <Header
             title="Seus cartões"
             subtitle={`Bem-vindo(a) de volta, ${user?.name.split(" ")[0]}!`}
@@ -80,12 +83,16 @@ export function Content({
           />
           <div className="flex h-full gap-16 py-8">
             <section className="flex flex-col gap-8">
-              <Card
-                type={card.type}
-                flag={card.flag.toLowerCase()}
-                title={card.title}
-                digits={card.last_digits}
-              />
+              {card ? (
+                <Card
+                  type={card.type}
+                  flag={card.flag}
+                  title={card.title}
+                  digits={card.last_digits}
+                />
+              ) : (
+                <CardEmpty />
+              )}
               {transactions && <CardReview transactions={transactions} />}
             </section>
 

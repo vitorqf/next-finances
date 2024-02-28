@@ -30,28 +30,28 @@ export async function middleware(req: NextRequest) {
   const isAccessingAuthRoute = AUTH_ROUTES.includes(req.nextUrl.pathname);
   const user: User = JSON.parse(req.cookies.get("@app:user")?.value || "{}");
 
-  if (isAccessingAuthRoute) {
-    if (user) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-    return NextResponse.next();
-  }
+  // if (isAccessingPrivateRoute) {
+  //   if (!user.accessToken && req.nextUrl.pathname !== "/entrar") {
+  //     return NextResponse.redirect(new URL("/entrar", req.url));
+  //   }
 
-  if (!isAccessingPrivateRoute) {
-    return NextResponse.next();
-  }
+  //   const validUser = await validateUserToken(user);
 
-  if (!user) {
-    return NextResponse.redirect(new URL("/entrar", req.url));
-  }
+  //   if (!validUser && req.nextUrl.pathname !== "/entrar") {
+  //     return NextResponse.redirect(new URL("/entrar", req.url));
+  //   }
+  // }
 
-  const validatedUser = await validateUserToken(user);
-  if (!validatedUser) {
-    return NextResponse.redirect(new URL("/entrar", req.url));
-  }
+  // if (isAccessingAuthRoute) {
+  //   if (user.accessToken && req.nextUrl.pathname !== "/dashboard") {
+  //     return NextResponse.redirect("/dashboard");
+  //   }
+  // }
+
+  // return NextResponse.next();
 }
 
 export const config = {
   matcher:
-    "/((?!api|_next/static|_next/image|robots.txt|public|images|manifest.json|sw.js|404|assets|favicon.ico|workbox-*).*)",
+    "/((?!api|_next/static|_next/image|entrar|robots.txt|public|images|manifest.json|sw.js|404|assets|favicon.ico|workbox-*).*)",
 };

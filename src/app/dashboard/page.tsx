@@ -10,18 +10,24 @@ export default async function Dashboard() {
     return null;
   }
   const parsedUser = JSON.parse(user.value);
-  const cards: Card[] = await api.cards.get(parsedUser.accessToken);
-  const currentMonth = moment(new Date()).toDate();
-  const selectedCard = cards[0];
-  const { results: transactions, total } = await api.transactions.get({
-    limit: 999,
-    filter: "card",
-    filterBy: selectedCard.title,
-    date: currentMonth,
-    token: parsedUser.accessToken,
-  });
 
-  return (
-    <Content transactions={transactions} card={selectedCard} total={total} />
-  );
+  const cards: Card[] = await api.cards.get(parsedUser.accessToken);
+
+  let transactions = [];
+  let total = 0;
+  if (cards.length > 0) {
+    const currentMonth = moment(new Date()).toDate();
+    const selectedCard = cards[0]; // You need to define how you select a card here.
+    const transactionData = await api.transactions.get({
+      limit: 999,
+      filter: "card",
+      filterBy: selectedCard.title,
+      date: currentMonth,
+      token: parsedUser.accessToken,
+    });
+    transactions = transactionData.results;
+    total = transactionData.total;
+  }
+
+  return <Content transactions={transactions} cards={cards} total={total} />;
 }

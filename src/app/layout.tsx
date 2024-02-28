@@ -1,9 +1,10 @@
 import { AuthProvider } from "@/hooks/useAuth";
+import { ModalProvider } from "@/hooks/useModal";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { Wrapper } from "./wrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,8 +46,10 @@ export default function RootLayout({
               },
             }}
           />
-          <NextTopLoader color="#4F46E5" showSpinner={false} height={4} />
-          {children}
+          <ModalProvider>
+            <Wrapper />
+            {children}
+          </ModalProvider>
         </AuthProvider>
       </body>
     </html>
