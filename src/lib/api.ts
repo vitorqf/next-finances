@@ -1,3 +1,5 @@
+import { Card } from "@/models/Card";
+
 export const BASE_URL = "http://localhost:3000";
 
 async function login({ email, password }: { email: string; password: string }) {
@@ -17,7 +19,7 @@ async function login({ email, password }: { email: string; password: string }) {
     }).then((res) => res.json());
     return { ...user, accessToken: access_token };
   }
-  return null;
+  throw new Error("invalid credentials");
 }
 
 async function getTransactions({
@@ -67,6 +69,31 @@ async function getCards(token: string) {
   return response.json();
 }
 
+async function createCard(
+  card: {
+    digits: string;
+    title: string;
+    flag: string;
+    type: string;
+  },
+  token: string,
+) {
+  const response = await fetch(`${BASE_URL}/cards`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      last_digits: Number(card.digits),
+      title: card.title,
+      flag: card.flag.toLowerCase(),
+      type: card.type,
+    }),
+  });
+  return response.json();
+}
+
 const api = {
   transactions: {
     get: getTransactions,
@@ -74,6 +101,7 @@ const api = {
   },
   cards: {
     get: getCards,
+    post: createCard,
   },
   auth: {
     login,

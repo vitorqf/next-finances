@@ -2,7 +2,6 @@
 
 import { User } from "@/models/User";
 import { getCookie, setCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
 import {
   Dispatch,
   ReactNode,
@@ -35,7 +34,6 @@ const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     const user = getCookie("@app:user");
@@ -57,8 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setCookie("@app:user", null);
     setLoading(false);
-    router.push("/entrar");
-  }, [router]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout, loading }}>
@@ -67,12 +64,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+const useAuth = () => useContext(AuthContext);
 
 export default useAuth;

@@ -1,14 +1,17 @@
+import useAuth from "@/hooks/useAuth";
 import useModal from "@/hooks/useModal";
-import { useCallback } from "react";
 import { BiPlus } from "react-icons/bi";
 import { ModalCard } from "./ModalCard";
 
 export function CardEmpty() {
   const { setModalContent } = useModal();
+  const { user } = useAuth();
 
-  const handleOpenModal = useCallback(() => {
-    setModalContent(ModalCard);
-  }, [setModalContent]);
+  const handleOpenModal = () => {
+    if (user) {
+      setModalContent(<ModalCard user={user} />);
+    }
+  };
   return (
     <div className="flex h-48 w-[348px] flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-[#042843] to-[#726E9E]">
       <button

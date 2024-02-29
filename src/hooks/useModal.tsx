@@ -5,33 +5,34 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
-  useCallback,
   useContext,
   useState,
 } from "react";
 
 type ModalContextType = {
   setModalContent: Dispatch<SetStateAction<ReactNode | undefined>>;
+  handleCloseModal: () => void; // Add handleCloseModal to ModalContextType
 };
 
 const ModalContext = createContext<ModalContextType>({
   setModalContent: () => {
     console.error("No modal context provided");
   },
+  handleCloseModal: () => {}, // Provide a default implementation
 });
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modalContent, setModalContent] = useState<ReactNode>();
 
-  const handleCloseModal = useCallback(() => {
+  const handleCloseModal = () => {
     setModalContent(undefined);
-  }, []);
+  };
 
   return (
-    <ModalContext.Provider value={{ setModalContent }}>
+    <ModalContext.Provider value={{ setModalContent, handleCloseModal }}>
       {modalContent && (
         <div
-          className="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black bg-opacity-70"
           onClick={handleCloseModal}
         >
           <div onClick={(e) => e.stopPropagation()}>{modalContent}</div>
@@ -43,5 +44,4 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const useModal = () => useContext(ModalContext);
-
 export default useModal;

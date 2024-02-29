@@ -2,17 +2,24 @@ import * as RadixSelect from "@radix-ui/react-select";
 import { useField } from "formik";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
-export function Select({ items, name }: { items: string[]; name: string }) {
+export function Select({
+  items,
+  name,
+  placeholder,
+}: {
+  items: string[];
+  name: string;
+  placeholder?: string;
+}) {
   const [field] = useField(name);
   return (
     <div className="flex items-stretch gap-2 rounded-lg border-2 border-white border-opacity-20 px-3 py-2 text-slate-400 focus-within:ring-2 focus-within:ring-indigo-500">
       <RadixSelect.Root
         value={field.value}
-        name={name}
-        onValueChange={(e) => field.onChange(e.toString())}
+        onValueChange={(value) => field.onChange({ target: { name, value } })}
       >
         <RadixSelect.Trigger className="flex w-full items-center justify-between outline-none">
-          <RadixSelect.Value placeholder="Selecione uma bandeira" />
+          <RadixSelect.Value placeholder={placeholder} />
           <RadixSelect.Icon>
             <BiChevronDown size={24} />
           </RadixSelect.Icon>

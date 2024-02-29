@@ -1,4 +1,8 @@
+import api from "@/lib/api";
+import { User } from "@/models/User";
 import { Form, Formik } from "formik";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { Select } from "./Select";
@@ -19,7 +23,43 @@ const FLAGS = [
   "Outro",
 ];
 
-export function ModalCard() {
+const TYPES = ["Crédito", "Débito"];
+
+interface FormStructure {
+  title: string;
+  digits: string;
+  flag: string;
+  type: string;
+}
+
+const FormSchema = Yup.object().shape({
+  title: Yup.string().required("O título é obrigatório"),
+  digits: Yup.string()
+    .matches(/^\d{4}$/, "Os últimos quatro dígitos são obrigatórios")
+    .required("Os últimos quatro dígitos são obrigatórios"),
+  flag: Yup.string().required("A bandeira é obrigatória"),
+  type: Yup.string().required("O tipo é obrigatório"),
+});
+
+export function ModalCard({ user }: { user: User }) {
+  const initialValues: FormStructure = {
+    title: "",
+    digits: "",
+    flag: "",
+    type: "",
+  };
+
+  const handleAddCard = async (values: FormStructure) => {
+    if (user?.accessToken) {
+      const card = await api.cards.post(values, user?.accessToken);
+      if (card) {
+        toast.success("Cartão adicionado com sucesso");
+      } else {
+        toast.error("Erro ao adicionar cartão");
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 rounded-lg bg-gray-900 p-8">
       <div>
@@ -30,15 +70,9 @@ export function ModalCard() {
       </div>
 
       <Formik
-        initialValues={{
-          title: "",
-          digits: "",
-          flag: "",
-          type: "",
-        }}
-        onSubmit={(values) => {
-          console.log(values);
-        }}
+        initialValues={initialValues}
+        validationSchema={FormSchema}
+        onSubmit={handleAddCard}
       >
         {({ values, handleChange, handleSubmit }) => (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -49,19 +83,18 @@ export function ModalCard() {
               onChange={handleChange}
             />
             <Input
-              placeholder="Número do cartão"
+              placeholder="Últimos quatro digitos"
               name="digits"
-              type="number"
+              type="text"
               value={values.digits}
               onChange={handleChange}
             />
-            <Input
-              placeholder="Tipo"
-              name="type"
-              value={values.type}
-              onChange={handleChange}
+            <Select items={TYPES} name="type" placeholder="Selecione o tipo" />
+            <Select
+              items={FLAGS}
+              name="flag"
+              placeholder="Selecione uma bandeira"
             />
-            <Select items={FLAGS} name="flag" />
             <Button title="Adicionar cartão" type="submit" />
           </Form>
         )}

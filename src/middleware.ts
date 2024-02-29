@@ -30,25 +30,25 @@ export async function middleware(req: NextRequest) {
   const isAccessingAuthRoute = AUTH_ROUTES.includes(req.nextUrl.pathname);
   const user: User = JSON.parse(req.cookies.get("@app:user")?.value || "{}");
 
-  // if (isAccessingPrivateRoute) {
-  //   if (!user.accessToken && req.nextUrl.pathname !== "/entrar") {
-  //     return NextResponse.redirect(new URL("/entrar", req.url));
-  //   }
+  if (isAccessingPrivateRoute) {
+    if (!user.accessToken && req.nextUrl.pathname !== "/entrar") {
+      return NextResponse.redirect(new URL("/entrar", req.url));
+    }
 
-  //   const validUser = await validateUserToken(user);
+    const validUser = await validateUserToken(user);
 
-  //   if (!validUser && req.nextUrl.pathname !== "/entrar") {
-  //     return NextResponse.redirect(new URL("/entrar", req.url));
-  //   }
-  // }
+    if (!validUser && req.nextUrl.pathname !== "/entrar") {
+      return NextResponse.redirect(new URL("/entrar", req.url));
+    }
+  }
 
-  // if (isAccessingAuthRoute) {
-  //   if (user.accessToken && req.nextUrl.pathname !== "/dashboard") {
-  //     return NextResponse.redirect("/dashboard");
-  //   }
-  // }
+  if (isAccessingAuthRoute) {
+    if (user.accessToken && req.nextUrl.pathname !== "/dashboard") {
+      return NextResponse.redirect("/dashboard");
+    }
+  }
 
-  // return NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {

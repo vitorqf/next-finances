@@ -34,12 +34,14 @@ export function Sidebar() {
           >
             {loading ? (
               <BiUser color="#9CA3AF" size={24} />
-            ) : (
+            ) : user?.picture ? (
               <Image
                 src={user?.picture || ""}
                 alt="Foto de perfil do usuário"
                 fill
               />
+            ) : (
+              <BiUser color="#9CA3AF" size={24} />
             )}
           </li>
         </ul>

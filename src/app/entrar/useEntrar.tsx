@@ -36,10 +36,11 @@ export function useEntrar() {
         const user = await api.auth.login(values);
         if (user) {
           setUser(user);
-          setLoading(false);
           router.push("/");
         }
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         toast.error("Usuário ou senha incorretos.");
       }
     },

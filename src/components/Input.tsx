@@ -13,7 +13,7 @@ export function Input({ icon, errors, ...others }: InputProps) {
       >
         {icon}
         <input
-          className={`border-none bg-gray-900 text-slate-100 placeholder-[#646A74] outline-none
+          className={`w-full border-none bg-gray-900 text-slate-100 placeholder-[#646A74] outline-none
           ${errors ? "text-red-500 placeholder-red-500" : ""}`}
           {...others}
         />
