@@ -1,11 +1,10 @@
 "use client";
 
-import { fetchTransactions } from "@/actions/fetch-transactions";
 import { BalanceChart } from "@/components/BalanceChart";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { CardEmpty } from "@/components/CardEmpty";
-import { CardReview } from "@/components/CardReview";
+import { CardOverview } from "@/components/CardOverview";
 import { Header } from "@/components/Header";
 import { Loading } from "@/components/Loading";
 import { Search } from "@/components/Search";
@@ -15,79 +14,31 @@ import { Tabs } from "@/components/Tabs";
 import { TransactionTable } from "@/components/TransactionTable";
 import useAuth from "@/hooks/useAuth";
 import { Card as CardModel } from "@/models/Card";
-import { Transaction } from "@/models/Transaction";
-import { formatAmout } from "@/utils";
-import { generateCsv, mkConfig } from "export-to-csv";
-import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { MdCreditCard } from "react-icons/md";
+import { Category } from "@/models/Category";
 import { RiDownloadCloudLine } from "react-icons/ri";
-import { TbRefresh } from "react-icons/tb";
+import { useContent } from "./useContent";
 
-export function Content({ cards }: { cards: CardModel[] }) {
-  const [card, setCard] = useState<CardModel | undefined>(cards[0]);
-  const [transactions, setTransactions] = useState<Transaction[]>();
-  const total = useMemo(() => transactions?.length, [transactions]);
-  const tabs = useMemo(() => ["Todas", "Entrada", "Saída"], []);
+export function Content({
+  cards,
+  categories,
+}: {
+  cards: CardModel[];
+  categories: Category[];
+}) {
+  const {
+    total,
+    tabs,
+    activeTab,
+    search,
+    card,
+    transactions,
+    actions,
+    localLoading,
+    handleSetActiveTab,
+    handleExportToCSV,
+    setSearch,
+  } = useContent(cards, categories);
   const { user, loading } = useAuth();
-  const actions = useMemo(
-    () => (
-      <>
-        <Button
-          title="Ver extrato"
-          variant="secondary"
-          icon={<TbRefresh size={20} />}
-        />
-        <Button
-          title="Novo cartão"
-          variant="secondary"
-          icon={<MdCreditCard size={20} />}
-        />
-        <Button title="Adicionar transação" />
-      </>
-    ),
-    [],
-  );
-
-  const [activeTab, setActiveTab] = useState(0);
-  const [search, setSearch] = useState("");
-
-  const handleExportToCSV = useCallback(() => {
-    if (transactions) {
-      const csvConfig = mkConfig({ useKeysAsHeaders: true });
-      const csvData = transactions.map((transaction) => ({
-        titulo: transaction.title,
-        valor: formatAmout(transaction.amount),
-        categoria: transaction.category.title,
-        data: transaction.date,
-      }));
-      const csv = generateCsv(csvConfig)(csvData);
-      const link = document.createElement("a");
-      link.download = `${new Date().getTime()}-transactions.csv`;
-      link.href = `data:text/csv;charset=utf-8,${csv}`;
-      link.click();
-    }
-  }, [transactions]);
-
-  const handleSetActiveTab = useCallback((index: number) => {
-    setActiveTab(index);
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      const currentMonth = moment(new Date()).toDate();
-
-      if (card && user?.accessToken) {
-        const data = await fetchTransactions(
-          card?.id,
-          currentMonth,
-          user?.accessToken,
-        );
-        setTransactions(data?.results);
-      }
-    }
-    fetchData();
-  }, [card, user?.accessToken]);
 
   return (
     <main className="flex overflow-hidden">
@@ -113,7 +64,7 @@ export function Content({ cards }: { cards: CardModel[] }) {
               ) : (
                 <CardEmpty />
               )}
-              {transactions && <CardReview transactions={transactions} />}
+              {transactions && <CardOverview transactions={transactions} />}
             </section>
 
             <section className="flex h-full flex-1 flex-col gap-8">

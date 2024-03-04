@@ -1,5 +1,5 @@
+import useAuth from "@/hooks/useAuth";
 import api from "@/lib/api";
-import { User } from "@/models/User";
 import { Form, Formik } from "formik";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
@@ -41,7 +41,8 @@ const FormSchema = Yup.object().shape({
   type: Yup.string().required("O tipo é obrigatório"),
 });
 
-export function ModalCard({ user }: { user: User }) {
+export function ModalCard() {
+  const { user } = useAuth();
   const initialValues: FormStructure = {
     title: "",
     digits: "",
@@ -54,6 +55,7 @@ export function ModalCard({ user }: { user: User }) {
       const card = await api.cards.post(values, user?.accessToken);
       if (card) {
         toast.success("Cartão adicionado com sucesso");
+        window.location.reload();
       } else {
         toast.error("Erro ao adicionar cartão");
       }

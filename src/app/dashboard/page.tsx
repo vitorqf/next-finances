@@ -1,3 +1,4 @@
+import { fetchCategories } from "@/actions/fetch-categories";
 import api from "@/lib/api";
 import { Card } from "@/models/Card";
 import { cookies } from "next/headers";
@@ -11,6 +12,7 @@ export default async function Dashboard() {
   const parsedUser = JSON.parse(user.value);
 
   const cards: Card[] = await api.cards.get(parsedUser.accessToken);
+  const categories = await fetchCategories();
 
-  return <Content cards={cards} />;
+  return <Content cards={cards} categories={categories} />;
 }

@@ -35,11 +35,11 @@ export function Select({
                 <RadixSelect.Item
                   key={item}
                   value={item}
-                  className="z-50 w-full p-4 outline-none
-                    hover:bg-gray-700 hover:text-gray-100
-                  "
+                  className="z-50 w-full p-4 outline-none hover:bg-gray-700 hover:text-gray-100"
                 >
-                  <RadixSelect.ItemText>{item}</RadixSelect.ItemText>
+                  <RadixSelect.ItemText className="text-gray-100">
+                    {item}
+                  </RadixSelect.ItemText>
                 </RadixSelect.Item>
               ))}
             </RadixSelect.Viewport>

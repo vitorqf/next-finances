@@ -22,6 +22,11 @@ async function login({ email, password }: { email: string; password: string }) {
   throw new Error("invalid credentials");
 }
 
+async function getCategories() {
+  const response = await fetch(`${BASE_URL}/categories`);
+  return response.json();
+}
+
 async function getTransactions({
   page = 0,
   limit = 10,
@@ -105,6 +110,9 @@ const api = {
   },
   auth: {
     login,
+  },
+  categories: {
+    get: getCategories,
   },
 };
 

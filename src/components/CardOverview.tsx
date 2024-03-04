@@ -4,7 +4,11 @@ import { useMemo } from "react";
 import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
 import { SectionTitle } from "./SectionTitle";
 
-export function CardReview({ transactions }: { transactions: Transaction[] }) {
+export function CardOverview({
+  transactions,
+}: {
+  transactions: Transaction[];
+}) {
   const totalBalance = useMemo(() => {
     return transactions.reduce((acc, transaction) => {
       return Math.abs(acc) + Math.abs(transaction.amount);
