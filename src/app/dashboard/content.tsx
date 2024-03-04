@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchTransactions } from "@/actions/fetch-transactions";
 import { BalanceChart } from "@/components/BalanceChart";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -17,20 +18,16 @@ import { Card as CardModel } from "@/models/Card";
 import { Transaction } from "@/models/Transaction";
 import { formatAmout } from "@/utils";
 import { generateCsv, mkConfig } from "export-to-csv";
-import { useCallback, useMemo, useState } from "react";
+import moment from "moment";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { MdCreditCard } from "react-icons/md";
 import { RiDownloadCloudLine } from "react-icons/ri";
 import { TbRefresh } from "react-icons/tb";
 
-export function Content({
-  transactions,
-  cards,
-  total,
-}: {
-  transactions: Transaction[];
-  cards: CardModel[];
-  total: number;
-}) {
+export function Content({ cards }: { cards: CardModel[] }) {
   const [card, setCard] = useState<CardModel | undefined>(cards[0]);
+  const [transactions, setTransactions] = useState<Transaction[]>();
+  const total = useMemo(() => transactions?.length, [transactions]);
   const tabs = useMemo(() => ["Todas", "Entrada", "Saída"], []);
   const { user, loading } = useAuth();
   const actions = useMemo(
@@ -41,7 +38,12 @@ export function Content({
           variant="secondary"
           icon={<TbRefresh size={20} />}
         />
-        <Button title="Adicionar cartão" />
+        <Button
+          title="Novo cartão"
+          variant="secondary"
+          icon={<MdCreditCard size={20} />}
+        />
+        <Button title="Adicionar transação" />
       </>
     ),
     [],
@@ -51,23 +53,41 @@ export function Content({
   const [search, setSearch] = useState("");
 
   const handleExportToCSV = useCallback(() => {
-    const csvConfig = mkConfig({ useKeysAsHeaders: true });
-    const csvData = transactions.map((transaction) => ({
-      titulo: transaction.title,
-      valor: formatAmout(transaction.amount),
-      categoria: transaction.category.title,
-      data: transaction.date,
-    }));
-    const csv = generateCsv(csvConfig)(csvData);
-    const link = document.createElement("a");
-    link.download = `${new Date().getTime()}-transactions.csv`;
-    link.href = `data:text/csv;charset=utf-8,${csv}`;
-    link.click();
+    if (transactions) {
+      const csvConfig = mkConfig({ useKeysAsHeaders: true });
+      const csvData = transactions.map((transaction) => ({
+        titulo: transaction.title,
+        valor: formatAmout(transaction.amount),
+        categoria: transaction.category.title,
+        data: transaction.date,
+      }));
+      const csv = generateCsv(csvConfig)(csvData);
+      const link = document.createElement("a");
+      link.download = `${new Date().getTime()}-transactions.csv`;
+      link.href = `data:text/csv;charset=utf-8,${csv}`;
+      link.click();
+    }
   }, [transactions]);
 
   const handleSetActiveTab = useCallback((index: number) => {
     setActiveTab(index);
   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const currentMonth = moment(new Date()).toDate();
+
+      if (card && user?.accessToken) {
+        const data = await fetchTransactions(
+          card?.id,
+          currentMonth,
+          user?.accessToken,
+        );
+        setTransactions(data?.results);
+      }
+    }
+    fetchData();
+  }, [card, user?.accessToken]);
 
   return (
     <main className="flex overflow-hidden">
@@ -97,46 +117,50 @@ export function Content({
             </section>
 
             <section className="flex h-full flex-1 flex-col gap-8">
-              <div>
-                <SectionTitle text="Movimentação ao longo do tempo" />
-                <p className="text-slate-400">
-                  Compare os gastos ao longo do mês
-                </p>
-              </div>
-              <div className="h-60">
-                <BalanceChart transactions={transactions} />
-              </div>
-              <div className="h-full max-h-96 flex-1 overflow-y-auto rounded-lg border-2 border-white border-opacity-10 scrollbar-thin scrollbar-track-slate-600 scrollbar-thumb-slate-300">
-                <div className="sticky right-0 top-0 flex items-center justify-between border-b-2 border-white border-opacity-10 bg-gray-950 p-6">
-                  <div className="flex items-center gap-2">
-                    <SectionTitle text="Últimas transações" />
-                    <p className="rounded-md border-2 border-white border-opacity-20 px-2 py-1 text-xs font-medium text-slate-100">
-                      {total} transações
+              {transactions && (
+                <>
+                  <div>
+                    <SectionTitle text="Movimentação ao longo do tempo" />
+                    <p className="text-slate-400">
+                      Compare os gastos ao longo do mês
                     </p>
                   </div>
-                  <div>
-                    <Button
-                      title="Exportar CSV"
-                      variant="secondary"
-                      icon={<RiDownloadCloudLine size={20} />}
-                      onClick={handleExportToCSV}
+                  <div className="h-60">
+                    <BalanceChart transactions={transactions} />
+                  </div>
+                  <div className="h-full max-h-96 flex-1 overflow-y-auto rounded-lg border-2 border-white border-opacity-10 scrollbar-thin scrollbar-track-slate-600 scrollbar-thumb-slate-300">
+                    <div className="sticky right-0 top-0 flex items-center justify-between border-b-2 border-white border-opacity-10 bg-gray-950 p-6">
+                      <div className="flex items-center gap-2">
+                        <SectionTitle text="Últimas transações" />
+                        <p className="rounded-md border-2 border-white border-opacity-20 px-2 py-1 text-xs font-medium text-slate-100">
+                          {total} transações
+                        </p>
+                      </div>
+                      <div>
+                        <Button
+                          title="Exportar CSV"
+                          variant="secondary"
+                          icon={<RiDownloadCloudLine size={20} />}
+                          onClick={handleExportToCSV}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between px-6 py-3">
+                      <Tabs
+                        tabs={tabs}
+                        activeTab={activeTab}
+                        setActiveTab={handleSetActiveTab}
+                      />
+                      <Search search={search} setSearch={setSearch} />
+                    </div>
+                    <TransactionTable
+                      transactions={transactions}
+                      search={search}
+                      tab={tabs[activeTab]}
                     />
                   </div>
-                </div>
-                <div className="flex items-center justify-between px-6 py-3">
-                  <Tabs
-                    tabs={tabs}
-                    activeTab={activeTab}
-                    setActiveTab={handleSetActiveTab}
-                  />
-                  <Search search={search} setSearch={setSearch} />
-                </div>
-                <TransactionTable
-                  transactions={transactions}
-                  search={search}
-                  tab={tabs[activeTab]}
-                />
-              </div>
+                </>
+              )}
             </section>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { Transaction } from "./Transaction";
 import { User } from "./User";
 
 export interface Card {
@@ -9,4 +10,5 @@ export interface Card {
   updated_at: string;
   user: User;
   last_digits: number;
+  transactions: Transaction[];
 }
